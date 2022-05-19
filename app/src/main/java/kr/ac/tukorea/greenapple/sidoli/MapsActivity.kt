@@ -2,14 +2,21 @@ package kr.ac.tukorea.greenapple.sidoli
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import android.util.Log
+import retrofit2.Callback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampData
+import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampRetrofitClient
+import kr.ac.tukorea.greenapple.sidoli.api_police.PoliceData
+import kr.ac.tukorea.greenapple.sidoli.api_police.PoliceRetrofitClient
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
+import retrofit2.Call
+import retrofit2.Response
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -22,21 +29,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        LampRetrofitClient.lampAPI.getLamp(page_no = 1, number_of_rows = 10)
+            .enqueue(object : Callback<LampData>{
+                override fun onResponse(call: Call<LampData>, response: Response<LampData>) {
+                    if (response.isSuccessful){
+                        for(data in response.body()!!.response.body.Items){
+                            Log.d("response", "onResponse Success")
+                        }
+                    } else{
+                        Log.d("response", "onResponse Failure")
+                    }
+                }
+
+                override fun onFailure(call: Call<LampData>, t: Throwable) {
+                    Log.d("response", "onFailure error ${t}")
+                }
+            })
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
