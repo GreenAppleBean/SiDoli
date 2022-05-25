@@ -32,7 +32,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         adb = AssetDatabaseOpenHelper(this)
         pp = adb.openDatabase()
         val c = pp.rawQuery("SELECT * FROM PoliceData", null)
-        if (c.columnCount == 0){
+        if (!c.moveToNext()){
             c.close()
             getPoliceAPI(pp).getPoliceData()
         }
