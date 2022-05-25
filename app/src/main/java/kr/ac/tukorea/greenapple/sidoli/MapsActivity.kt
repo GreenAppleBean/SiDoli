@@ -12,9 +12,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampData
 import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampRetrofitClient
-import kr.ac.tukorea.greenapple.sidoli.api_police.PoliceData
-import kr.ac.tukorea.greenapple.sidoli.api_police.PoliceRetrofitClient
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
+import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
 import retrofit2.Call
 import retrofit2.Response
 
@@ -29,6 +28,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        /*
         LampRetrofitClient.lampAPI.getLamp(page_no = 1, number_of_rows = 10)
             .enqueue(object : Callback<LampData>{
                 override fun onResponse(call: Call<LampData>, response: Response<LampData>) {
@@ -45,7 +45,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     Log.d("response", "onFailure error ${t}")
                 }
             })
-
+        */
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -56,10 +56,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        // APIData.db 파일을 내부 저장소로 이동후 DB 생성
+        val adb = AssetDatabaseOpenHelper(this)
+        val pp = adb.openDatabase()
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val lampArray = adb.DataExtract(pp)
+        for(idx : Int in 0 until lampArray.size){
+            val sample = LatLng(lampArray[idx].latitude, lampArray[idx].longitude)
+            mMap.addMarker(MarkerOptions().position(sample))
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(lampArray[0].latitude, lampArray[0].longitude)))
     }
 }
