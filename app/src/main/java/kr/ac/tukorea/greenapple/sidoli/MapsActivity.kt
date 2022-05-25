@@ -1,5 +1,6 @@
 package kr.ac.tukorea.greenapple.sidoli
 
+import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampData
-import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampRetrofitClient
+import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
 import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
 import retrofit2.Call
@@ -21,31 +21,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    lateinit var adb:AssetDatabaseOpenHelper
+    lateinit var pp:SQLiteDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        /*
-        LampRetrofitClient.lampAPI.getLamp(page_no = 1, number_of_rows = 10)
-            .enqueue(object : Callback<LampData>{
-                override fun onResponse(call: Call<LampData>, response: Response<LampData>) {
-                    if (response.isSuccessful){
-                        for(data in response.body()!!.response.body.Items){
-                            Log.d("response", "onResponse Success")
-                        }
-                    } else{
-                        Log.d("response", "onResponse Failure")
-                    }
-                }
-
-                override fun onFailure(call: Call<LampData>, t: Throwable) {
-                    Log.d("response", "onFailure error ${t}")
-                }
-            })
-        */
+        adb = AssetDatabaseOpenHelper(this)
+        pp = adb.openDatabase()
+        getPoliceAPI(pp).getPoliceData()
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -56,10 +42,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        // APIData.db 파일을 내부 저장소로 이동후 DB 생성
-        val adb = AssetDatabaseOpenHelper(this)
-        val pp = adb.openDatabase()
-
+        pp = adb.openDatabase()
         val lampArray = adb.DataExtract(pp)
         for(idx : Int in 0 until lampArray.size){
             val sample = LatLng(lampArray[idx].latitude, lampArray[idx].longitude)
