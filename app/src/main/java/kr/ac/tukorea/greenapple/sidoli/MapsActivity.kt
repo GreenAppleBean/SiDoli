@@ -31,7 +31,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
         adb = AssetDatabaseOpenHelper(this)
         pp = adb.openDatabase()
-        getPoliceAPI(pp).getPoliceData()
+        val c = pp.rawQuery("SELECT * FROM PoliceData", null)
+        if (c.columnCount == 0){
+            c.close()
+            getPoliceAPI(pp).getPoliceData()
+        }
+        c.close()
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
