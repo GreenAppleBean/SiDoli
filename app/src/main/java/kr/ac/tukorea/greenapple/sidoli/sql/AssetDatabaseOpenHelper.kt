@@ -47,20 +47,43 @@ class AssetDatabaseOpenHelper(private val context: Context) {
         Log.d("#DB", "completed..")
     }
 
-    fun DataExtract(database: SQLiteDatabase): ArrayList<lampSortData> {
+    // db에서 lamp data만 끌어내는 method
+    fun LampDataExtract(database: SQLiteDatabase): ArrayList<lampSortData> {
         var cursor: Cursor
         cursor = database.rawQuery("SELECT * from LAMPData;", null)
 
-        var lampArray = ArrayList<lampSortData>()
+        var lampArray = ArrayList<lampSortData>()   // data class의 인스턴스들로 구성된 arraylist를 선언하고 반환함
 
         while (cursor.moveToNext()) {
+            // 행에서 3, 4번째 열에 해당하는 내용 (위도, 경도)을 arraylist에 삽입함
             lampArray.add(lampSortData(cursor.getDouble(2), cursor.getDouble(3)))
         }
 
         return lampArray
     }
+
+    // db에서 police data만 끌어내는 method
+    fun PoliceDataExtract(database: SQLiteDatabase): ArrayList<policeSortData> {
+        var cursor: Cursor
+        cursor = database.rawQuery("SELECT * from PoliceData;", null)
+
+        var policeArray = ArrayList<policeSortData>()   // data class의 인스턴스들로 구성된 arraylist를 선언하고 반환함
+
+        while (cursor.moveToNext()) {
+            // 행에서 3, 4번째 열에 해당하는 내용 (위도, 경도)을 arraylist에 삽입함
+            policeArray.add(policeSortData(cursor.getDouble(2), cursor.getDouble(3)))
+        }
+
+        return policeArray
+    }
 }
+
 data class lampSortData(
+    val latitude:Double,
+    val longitude:Double
+)
+
+data class policeSortData(
     val latitude:Double,
     val longitude:Double
 )

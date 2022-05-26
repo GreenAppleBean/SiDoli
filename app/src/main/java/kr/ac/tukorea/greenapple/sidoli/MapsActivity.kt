@@ -9,6 +9,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
@@ -29,13 +30,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        adb = AssetDatabaseOpenHelper(this)
-        pp = adb.openDatabase()
-        val c = pp.rawQuery("SELECT * FROM PoliceData", null)
-        if (!c.moveToNext()){
-            getPoliceAPI(pp).getPoliceData()
+
+        // 공공데이터로부터 바로 읽어오기(경찰 데이터 부분)
+        adb = AssetDatabaseOpenHelper(this) // assets에 있는 db파일 불러오기
+        pp = adb.openDatabase() // database 열기
+
+        // 쿼리문을 통해 데이터가 있는 지 검사하기
+        val policeExistTest = pp.rawQuery("SELECT * FROM PoliceData;", null)
+        if (!policeExistTest.moveToNext()){   // db 파일에 경찰 data가 없을 시
+            getPoliceAPI(pp).getPoliceData()    // api에서 경찰 data 끌어와서 집어넣음
         }
-        c.close()
+        policeExistTest.close()   // 데이터베이스 닫기
+
+        /* 추후에 램프 공공데이터 api 고쳐지면 추가할 코드
+        val lampExistTest = pp.rawQuery("SELECT * FROM LampData;", null)
+        if (!lampExistTest.moveToNext()){   // db 파일에 가로등 data가 없을 시
+            getLampAPI(pp).getLampData()    // api에서 가로등 data 끌어와서 집어넣음
+        }
+        lampExistTest.close()   // 데이터베이스 닫기
+        */
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -48,11 +61,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         pp = adb.openDatabase()
-        val lampArray = adb.DataExtract(pp)
+
+        // data를 담을 ArrayList 선언
+        val lampArray = adb.LampDataExtract(pp)
+        val policeArray = adb.PoliceDataExtract(pp)
+
+
+        // for loop을 돌려서 지도에 마커를 찍어줌
         for(idx : Int in 0 until lampArray.size){
-            val sample = LatLng(lampArray[idx].latitude, lampArray[idx].longitude)
-            mMap.addMarker(MarkerOptions().position(sample))
+            val lamp = LatLng(lampArray[idx].latitude, lampArray[idx].longitude)
+            mMap.addMarker(MarkerOptions().position(lamp))
         }
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(lampArray[0].latitude, lampArray[0].longitude)))
+
+        // 경찰 data 마커 표시하기 (파랑색)
+        for(idx : Int in 0 until policeArray.size){
+            val police = LatLng(policeArray[idx].latitude, policeArray[idx].longitude)
+            mMap.addMarker(MarkerOptions().position(police).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+        }
+
+        // 일단 한국공학대학교 위치를 기준으로 기본 카메라 줌 위치를 설정했습니다. 추후에 gps 위치 기반으로 줌 설정하는 것도 구현해봅시다!
+        // 한국공학대학교(37.3401906, 126.7335293)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.3401906,126.7335293), 11f))
+
     }
 }
