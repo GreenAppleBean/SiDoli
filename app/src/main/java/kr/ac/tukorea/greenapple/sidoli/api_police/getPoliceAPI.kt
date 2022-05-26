@@ -24,6 +24,5 @@ class getPoliceAPI(val sql: SQLiteDatabase) {
                     Log.d("response", "onFailure error ${t}")
                 }
             })
-        sql.close()
     }
 }
