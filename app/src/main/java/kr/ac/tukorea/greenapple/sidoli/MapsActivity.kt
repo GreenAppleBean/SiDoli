@@ -12,6 +12,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.clustering.ClusterManager
+import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampData
+import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampItemData
 import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
 import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
@@ -24,6 +27,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
     lateinit var adb:AssetDatabaseOpenHelper
     lateinit var pp:SQLiteDatabase
+    private lateinit var clusterManager: ClusterManager<LampItemData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,15 +66,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         pp = adb.openDatabase()
 
+        clusterManager = ClusterManager(this, mMap)
+        mMap.setOnCameraIdleListener(clusterManager)
+        mMap.setOnMarkerClickListener(clusterManager)
+
         // data를 담을 ArrayList 선언
         val lampArray = adb.LampDataExtract(pp)
         val policeArray = adb.PoliceDataExtract(pp)
 
 
-        // for loop을 돌려서 지도에 마커를 찍어줌
+        // for loop을 돌려서 지도에 클러스터링 마커를 찍어줌
         for(idx : Int in 0 until lampArray.size){
-            val lamp = LatLng(lampArray[idx].latitude, lampArray[idx].longitude)
-            mMap.addMarker(MarkerOptions().position(lamp))
+            clusterManager.addItem(LampItemData(lampArray[idx].latitude.toString(),lampArray[idx].longitude.toInt(),lampArray[idx].latitude.toString(),lampArray[idx].longitude.toString()))
+
         }
 
         // 경찰 data 마커 표시하기 (파랑색)
