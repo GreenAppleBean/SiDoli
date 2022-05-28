@@ -16,9 +16,9 @@ data class routesData(
 
 data class legsData(
     @SerializedName("distance")
-    val distance:ArrayList<distanceData>,
+    val distance:distanceData,
     @SerializedName("duration")
-    val duration:ArrayList<durationData>,
+    val duration:durationData,
     @SerializedName("steps")
     val steps:ArrayList<stepData>
 )
@@ -35,13 +35,13 @@ data class durationData(
 
 data class stepData(
     @SerializedName("distance")
-    val distance:ArrayList<distanceData>,
+    val distance:distanceData,
     @SerializedName("duration")
-    val duration:ArrayList<durationData>,
+    val duration:durationData,
     @SerializedName("end_location")
-    val end_location:ArrayList<locationData>,
+    val end_location:locationData,
     @SerializedName("start_location")
-    val start_location:ArrayList<locationData>,
+    val start_location:locationData,
     @SerializedName("steps")
     val steps:ArrayList<stepData>?
 )
@@ -49,5 +49,12 @@ data class stepData(
 data class locationData(
     val lat:String,
     val lng:String,
+)
+
+data class pathData(
+    val start_lat:String,
+    val start_lng:String,
+    val end_lat:String,
+    val end_lng:String
 )
 

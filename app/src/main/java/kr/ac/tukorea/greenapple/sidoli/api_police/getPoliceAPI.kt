@@ -21,7 +21,7 @@ class getPoliceAPI(val sql: SQLiteDatabase) {
                 }
 
                 override fun onFailure(call: Call<PoliceData>, t: Throwable) {
-                    Log.d("response", "onFailure error ${t}")
+                    Log.d("response", "onFailure error $t")
                 }
             })
     }
