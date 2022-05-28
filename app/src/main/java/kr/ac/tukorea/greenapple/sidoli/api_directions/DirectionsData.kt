@@ -41,7 +41,9 @@ data class stepData(
     @SerializedName("end_location")
     val end_location:ArrayList<locationData>,
     @SerializedName("start_location")
-    val start_location:ArrayList<locationData>
+    val start_location:ArrayList<locationData>,
+    @SerializedName("steps")
+    val steps:ArrayList<stepData>?
 )
 
 data class locationData(
