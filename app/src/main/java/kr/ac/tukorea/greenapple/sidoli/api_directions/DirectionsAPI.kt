@@ -10,7 +10,7 @@ interface DirectionsAPI {
         @Query("origin") origin:String,
         @Query("destination") destination:String,
         @Query("mode") type:String="transit",
-        @Query("departure_time") time:String="new",
-        @Query("key") api_key:String = "API_KEY"
+        @Query("departure_time") time:String="now",
+        @Query("key") api_key:String = "API_KEY_FOR_WEB"
     ):retrofit2.Call<DirectionsData>
 }

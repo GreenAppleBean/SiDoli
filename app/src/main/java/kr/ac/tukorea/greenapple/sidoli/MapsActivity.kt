@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
+import kr.ac.tukorea.greenapple.sidoli.api_directions.getDirectionsAPI
 import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampItemData
 import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
@@ -85,6 +86,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // 일단 한국공학대학교 위치를 기준으로 기본 카메라 줌 위치를 설정했습니다. 추후에 gps 위치 기반으로 줌 설정하는 것도 구현해봅시다!
         // 한국공학대학교(37.3401906, 126.7335293)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.3401906,126.7335293), 11f))
+
+        // 길찾기 예시입니다.
+        // 사용법은 주석으로 적어놨어요!
+        var a = getDirectionsAPI().getDirectionsData("37.3401906,126.7335293", "37.351857902626435,126.742838367119")
 
     }
 }

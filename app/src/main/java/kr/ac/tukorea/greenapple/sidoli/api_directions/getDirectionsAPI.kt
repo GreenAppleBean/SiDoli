@@ -5,12 +5,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+// 길찾기용 클래스
 class getDirectionsAPI {
     lateinit var distance:String
     lateinit var duration:String
+    // start_location: 시작주소값 String 형식->"위도,경도"(공백 x) end_location: 도착주소값 String 형식->시작주소값과 동일
     fun getDirectionsData(start_location:String, end_location:String):ArrayList<pathData>{
         val temp = ArrayList<pathData>(0)
-        DirectionsRetrofitClient.DirectionsAPI.getDirection(origin = start_location, destination = end_location)
+        DirectionsRetrofitClient.directionsAPI.getDirection(origin = start_location, destination = end_location)
             .enqueue(object: Callback<DirectionsData>{
                 override fun onResponse(
                     call: Call<DirectionsData>,

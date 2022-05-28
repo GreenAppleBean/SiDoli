@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object DirectionsRetrofitClient {
     private var BASE_URL = "https://maps.googleapis.com/maps/api/directions/"
-    lateinit var DirectionsAPI:DirectionsAPI
+    var directionsAPI:DirectionsAPI
 
     init {
         val gson = GsonBuilder().setLenient().create()
@@ -25,6 +25,6 @@ object DirectionsRetrofitClient {
             .client(okHttpClient)
             .build()
 
-        DirectionsAPI = retrofit.create(DirectionsAPI::class.java)
+        directionsAPI = retrofit.create(DirectionsAPI::class.java)
     }
 }
