@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object LampRetrofitClient {
     private var LAMP_BASE_URL = "http://api.data.go.kr/openapi/"
-    lateinit var lampAPI: LampAPI
+    var lampAPI: LampAPI
 
     init {
         val gson = GsonBuilder().setLenient().create()
