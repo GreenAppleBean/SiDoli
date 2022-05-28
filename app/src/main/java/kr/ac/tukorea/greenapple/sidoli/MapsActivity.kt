@@ -3,8 +3,6 @@ package kr.ac.tukorea.greenapple.sidoli
 import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import retrofit2.Callback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -13,13 +11,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
-import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampData
 import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampItemData
 import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
 import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
-import retrofit2.Call
-import retrofit2.Response
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
