@@ -10,6 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.clustering.ClusterManager
 import kr.ac.tukorea.greenapple.sidoli.api_directions.getDirectionsAPI
 import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampItemData
@@ -89,7 +90,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 길찾기 예시입니다.
         // 사용법은 주석으로 적어놨어요!
-        var a = getDirectionsAPI().getDirectionsData("37.3401906,126.7335293", "37.351857902626435,126.742838367119")
+        var a = getDirectionsAPI()
+        a.getDirectionsData("37.3401906,126.7335293", "37.351857902626435,126.742838367119")
+
+        var b = a.temp
+        val point1 = LatLng(b[0].start_lat.toDouble(), b[0].start_lng.toDouble())
+        val point2 = LatLng(b[0].end_lat.toDouble(), b[0].end_lng.toDouble())
+
+
+
+        mMap.addPolyline(PolylineOptions()
+            .clickable(true)
+            .add(point1, point2)
+            //.add(LatLng(37.3401906, 126.7335293), LatLng(37.351857902626435,126.742838367119))
+        )
+
+
+
+
 
     }
 }
