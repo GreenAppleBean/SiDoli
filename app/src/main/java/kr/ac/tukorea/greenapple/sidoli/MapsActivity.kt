@@ -3,6 +3,7 @@ package kr.ac.tukorea.greenapple.sidoli
 import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -12,11 +13,17 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.clustering.ClusterManager
+import kr.ac.tukorea.greenapple.sidoli.api_directions.DirectionsData
+import kr.ac.tukorea.greenapple.sidoli.api_directions.DirectionsRetrofitClient
 import kr.ac.tukorea.greenapple.sidoli.api_directions.getDirectionsAPI
+import kr.ac.tukorea.greenapple.sidoli.api_directions.pathData
 import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampItemData
 import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
 import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -24,6 +31,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
     lateinit var adb:AssetDatabaseOpenHelper
     lateinit var pp:SQLiteDatabase
+    var routes = ArrayList<pathData>(10)
     private lateinit var clusterManager: ClusterManager<LampItemData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,26 +96,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // 한국공학대학교(37.3401906, 126.7335293)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.3401906,126.7335293), 11f))
 
-        // 길찾기 예시입니다.
-        // 사용법은 주석으로 적어놨어요!
-        var a = getDirectionsAPI()
-        a.getDirectionsData("37.3401906,126.7335293", "37.351857902626435,126.742838367119")
-
-        var b = a.temp
-        val point1 = LatLng(b[0].start_lat.toDouble(), b[0].start_lng.toDouble())
-        val point2 = LatLng(b[0].end_lat.toDouble(), b[0].end_lng.toDouble())
-
-
-
-        mMap.addPolyline(PolylineOptions()
-            .clickable(true)
-            .add(point1, point2)
-            //.add(LatLng(37.3401906, 126.7335293), LatLng(37.351857902626435,126.742838367119))
-        )
-
-
-
-
-
+        getDirectionsAPI(pp).getDirectionsData("37.3401906,126.7335293", "37.351857902626435,126.742838367119")
+        val cursor = pp.rawQuery("SELECT * From Directions;", null)
+        while (cursor.moveToNext()){
+            val point1 = LatLng(cursor.getDouble(0), cursor.getDouble(1))
+            val point2 = LatLng(cursor.getDouble(2), cursor.getDouble(3))
+            mMap.addPolyline(PolylineOptions()
+                .clickable(true)
+                .add(point1, point2)
+            )
+        }
+        cursor.close()
     }
+
+
 }
