@@ -35,7 +35,7 @@
 * sqlite @버전
 * 구글맵?
 
-## 어플 버젼
+## 어플 버전
 
 ## APIs
 * [전국 보안등정보 표준데이터](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15017320)  
