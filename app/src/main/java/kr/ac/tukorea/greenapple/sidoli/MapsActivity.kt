@@ -3,7 +3,6 @@ package kr.ac.tukorea.greenapple.sidoli
 import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -13,17 +12,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.clustering.ClusterManager
-import kr.ac.tukorea.greenapple.sidoli.api_directions.DirectionsData
-import kr.ac.tukorea.greenapple.sidoli.api_directions.DirectionsRetrofitClient
 import kr.ac.tukorea.greenapple.sidoli.api_directions.getDirectionsAPI
-import kr.ac.tukorea.greenapple.sidoli.api_directions.pathData
 import kr.ac.tukorea.greenapple.sidoli.api_lamp.LampItemData
 import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
 import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -31,7 +24,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
     lateinit var adb:AssetDatabaseOpenHelper
     lateinit var pp:SQLiteDatabase
-    var routes = ArrayList<pathData>(10)
     private lateinit var clusterManager: ClusterManager<LampItemData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +88,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // 한국공학대학교(37.3401906, 126.7335293)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.3401906,126.7335293), 11f))
 
+        // 이부분이 길찾기 클릭 리스너에 들어가면 됩니다.
         getDirectionsAPI(pp).getDirectionsData("37.3401906,126.7335293", "37.351857902626435,126.742838367119")
         val cursor = pp.rawQuery("SELECT * From Directions;", null)
         while (cursor.moveToNext()){
