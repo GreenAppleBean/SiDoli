@@ -1,5 +1,6 @@
 package kr.ac.tukorea.greenapple.sidoli
 
+import android.annotation.SuppressLint
 import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -65,6 +66,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         pp = adb.openDatabase()
@@ -78,10 +80,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 일단 한국공학대학교 위치를 기준으로 기본 카메라 줌 위치를 설정했습니다. 추후에 gps 위치 기반으로 줌 설정하는 것도 구현해봅시다!
         // 한국공학대학교(37.3401906, 126.7335293)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.3401906,126.7335293), 11f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.3401906,126.7335293), 13f))
 
         // 이부분이 길찾기 클릭 리스너에 들어가면 됩니다.
-        getcurrentDirection("37.3401906,126.7335293", "37.351857902626435,126.742838367119")
+        getcurrentDirection("37.3401906,126.7335293", "37.3302817253012,126.68978386536874")
     }
 
     private fun getcurrentDirection(startLoc:String, endLoc:String) {
