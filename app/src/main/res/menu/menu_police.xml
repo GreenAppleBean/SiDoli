@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/world"
+        android:title="옥구지구대" />
+    <item
+        android:id="@+id/world2"
+        android:title="장곡지구대" />
+    <item
+        android:id="@+id/world3"
+        android:title="군자파출소" />
+    <item
+        android:id="@+id/world4"
+        android:title="매화파출소" />
+    <item
+        android:id="@+id/world5"
+        android:title="정왕지구대" />
+    <item
+        android:id="@+id/world6"
+        android:title="은행파출소" />
+    <item
+        android:id="@+id/world7"
+        android:title="능곡파출소" />
+    <item
+        android:id="@+id/world8"
+        android:title="신천파출소" />
+    <item
+        android:id="@+id/world9"
+        android:title="시화파출소" />
+    <item
+        android:id="@+id/world10"
+        android:title="대야파출소" />
+</menu>
