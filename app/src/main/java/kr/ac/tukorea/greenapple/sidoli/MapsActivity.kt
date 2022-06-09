@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.widget.PopupMenu
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -41,6 +43,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // 쿼리문을 통해 데이터가 있는 지 검사하기
         insertPoliceData()
         //insertLampData()
+
+        binding.policebtn.setOnClickListener { showPopup(binding.policebtn) }
 
 
 
@@ -121,6 +125,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.addMarker(MarkerOptions().position(police)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
         }
+    }
+
+    private fun showPopup(v: View) {
+        val popup = PopupMenu(this, v) // PopupMenu 객체 선언
+        popup.menuInflater.inflate(R.menu.menu_police, popup.menu) // 메뉴 레이아웃 inflate
+        popup.show() // 팝업 보여주기
     }
 
 
