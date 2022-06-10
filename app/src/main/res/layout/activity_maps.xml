@@ -1,39 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="7"
-        >
+        android:layout_weight="1">
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MapsActivity"/>
-
+            tools:context=".MapsActivity" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/Location"
+            android:id="@+id/Floating1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
+            android:layout_marginBottom="70dp"
             android:backgroundTint="@color/white"
+            android:src="@drawable/ic_baseline_lightbulb_24" />
 
-            android:src="@drawable/ic_baseline_near_me_24"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="8dp"
-            />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/Floating2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="10dp"
 
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_baseline_near_me_24" />
 
 
     </FrameLayout>
@@ -41,43 +43,33 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-        <!-- 누르면 경찰서 마커 끄고 켜기-->
+        android:layout_height="90dp">
+        <!-- 누르면 가까운 경찰서 목록 -->
         <ImageButton
-            android:id="@+id/lightbtn"
+            android:id="@+id/Mapbtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="1.5dp"
-            android:src="@drawable/ic_baseline_lightbulb_24"
-            android:backgroundTint="@color/white"/>
-        <!-- 누르면 안심벨 울리기 -->
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_baseline_map_24" />
+        <!-- 누르면 112전화 -->
         <ImageButton
             android:id="@+id/bellbtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="1.5dp"
-            android:src="@drawable/ic_baseline_notifications_active_24"
-            android:backgroundTint="@color/white"/>
-        <!-- 누르면 112전화 -->
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_baseline_notifications_active_24" />
+        <!-- 누르면 본인 위치로 -->
         <ImageButton
-            android:id="@+id/callbtn"
+            android:id="@+id/nearbtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="1.5dp"
-            android:src="@drawable/ic_baseline_call_24"
-            android:backgroundTint="@color/white"/>
-        <!-- 누르면 경찰서로 -->
-        <ImageButton
-            android:id="@+id/policebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="1.5dp"
-            android:src="@drawable/ic_baseline_local_police_24"
-            android:backgroundTint="@color/white"/>
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_baseline_local_police_24" />
     </LinearLayout>
 </LinearLayout>

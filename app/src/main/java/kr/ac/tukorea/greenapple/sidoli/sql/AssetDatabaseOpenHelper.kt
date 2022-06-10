@@ -70,8 +70,8 @@ class AssetDatabaseOpenHelper(private val context: Context) {
         var policeArray = ArrayList<policeSortData>()   // data class의 인스턴스들로 구성된 arraylist를 선언하고 반환함
 
         while (cursor.moveToNext()) {
-            // 행에서 3, 4번째 열에 해당하는 내용 (위도, 경도)을 arraylist에 삽입함
-            policeArray.add(policeSortData(cursor.getDouble(2), cursor.getDouble(3)))
+            // 행에서 3, 4번째 열에 해당하는 내용 (위도, 경도)을 arraylist에 삽입함 + 이름도 얻어오기 위해 0, 1행도 추가함
+            policeArray.add(policeSortData(cursor.getString(0) + cursor.getString(1), cursor.getDouble(2), cursor.getDouble(3)))
         }
 
         return policeArray
@@ -84,6 +84,7 @@ data class lampSortData(
 )
 
 data class policeSortData(
+    val name:String,
     val latitude:Double,
     val longitude:Double
 )
