@@ -33,8 +33,12 @@ import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
 import kr.ac.tukorea.greenapple.sidoli.sql.policeSortData
 
 /**
+ * Push 전 API KEY API KEY API KEY API KEY API KEY API KEY API KEY API KEY API KEY API KEY 주의!!
+ */
+
+/**
  * 자잘한 버그들..
- * 1. 보안등 버튼이 한 번 클릭 되면 재클릭 시 지워져도 확대, 축소 시 다시 뜸 (setOnCameraListener 때문인 것 같은데 자세한 건 알아봐야 함)
+ * 1. 보안등 버튼이 한 번 클릭 되면 재클릭 시 지워져도 확대, 축소 시 다시 뜸 (setOnCameraListener 때문인 것 같은데 자세한 건 알아봐야 함) -> fixed!!
  * 2. 안심벨 울리기는 on/off 방식으로 구현해놓긴 했는데, 실제로 울리는 지는 실제 디바이스에서 테스트해봐야할 듯!!
  * 3. 경찰서 목록이 뜨긴 하는데, 두 번째로 클릭해야만 그에 맞는 적합한 경로가 뜸 (뭔가 클릭이 한 번씩 밀리는 것 같음)
  */
@@ -85,9 +89,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         var Light_flag = true  // 버튼의 on/off 구현을 위한 flag 설정
         LightBtn.setOnClickListener{
             if(Light_flag) {
+                mMap.setOnCameraIdleListener(clusterManager)    // 줌 인 줌 아웃을 trigger 삼아 작동하는 듯
+                mMap.setOnMarkerClickListener(clusterManager)   // 마커 클릭 listener
                 Light_flag = addClusterOnMap()   // map에 가로등 클러스터 구현
             } else {
-                mMap.clear()    // 지도에 있는 모든 표시들 지움(클러스터 일시적으로 지워지긴 하나 확대 및 축소 시 다시 살아남)
+                mMap.setOnCameraIdleListener(null)    // 클러스터를 등록해놓은 카메라 리스너 unset
+                mMap.setOnMarkerClickListener(null)   // 클러스터를 등록해놓은 마커 클릭 리스너 unset
+                mMap.clear()
                 Light_flag = true
             }
         }
@@ -114,6 +122,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 4. 경찰서 목록이 뜨고 그 중에서 하나 선택하면 현위치로부터 경로 찍어주기
         PoliceBtn.setOnClickListener {
+            updateLocation()    // 최초 실행 시 현 위치 설정을 위해 추가한 메소드
             val popupMenu = PopupMenu(applicationContext, PoliceBtn)    // 팝업 메뉴를 통한 구현
             menuInflater.inflate(R.menu.menu_police, popupMenu.menu)
             val listener = PopupMenuListener(adb.PoliceDataExtract(pp))  // 리스너는 아래에 내부 클래스로 구현해둠
@@ -191,8 +200,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         pp = adb.openDatabase()
 
         clusterManager = ClusterManager(this, mMap)
-        mMap.setOnCameraIdleListener(clusterManager)    // 줌 인 줌 아웃을 trigger 삼아 작동하는 듯
-        mMap.setOnMarkerClickListener(clusterManager)   // 마커 클릭 listener
+        //mMap.setOnCameraIdleListener(clusterManager)    // 줌 인 줌 아웃을 trigger 삼아 작동하는 듯
+        //mMap.setOnMarkerClickListener(clusterManager)   // 마커 클릭 listener
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this) // 현재 위치 설정을 위한 코드
 
