@@ -19,16 +19,7 @@
             tools:context=".MapsActivity" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/Floating1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="70dp"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/ic_baseline_lightbulb_24" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/Floating2"
+            android:id="@+id/GPS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
@@ -44,27 +35,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="90dp">
-        <!-- 누르면 가까운 경찰서 목록 -->
+
+        <!-- 누르면 주변 가로등 팝업 -->
         <ImageButton
-            android:id="@+id/Mapbtn"
+            android:id="@+id/LightBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="1.5dp"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
-            android:src="@drawable/ic_baseline_map_24" />
-        <!-- 누르면 112전화 -->
+            android:src="@drawable/ic_baseline_lightbulb_24" />
+
+        <!-- 누르면 안심벨 울리기 -->
         <ImageButton
-            android:id="@+id/bellbtn"
+            android:id="@+id/BellBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="1.5dp"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_baseline_notifications_active_24" />
+
+        <!-- 누르면 가까운 경찰서 목록 -->
+        <ImageButton
+            android:id="@+id/CallBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="1.5dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_baseline_call_24" />
+
         <!-- 누르면 본인 위치로 -->
         <ImageButton
-            android:id="@+id/nearbtn"
+            android:id="@+id/PoliceBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="1.5dp"
