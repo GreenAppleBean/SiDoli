@@ -30,6 +30,7 @@ import kr.ac.tukorea.greenapple.sidoli.api_lamp.getLampAPI
 import kr.ac.tukorea.greenapple.sidoli.api_police.getPoliceAPI
 import kr.ac.tukorea.greenapple.sidoli.databinding.ActivityMapsBinding
 import kr.ac.tukorea.greenapple.sidoli.sql.AssetDatabaseOpenHelper
+import kr.ac.tukorea.greenapple.sidoli.sql.policeSortData
 
 /**
  * 자잘한 버그들..
@@ -67,52 +68,44 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 쿼리문을 통해 데이터가 있는 지 검사하기
         insertPoliceData()  // 경찰서 위치에 대한 데이터를 db에 추가함
-        //insertLampData()  // 보안등 관련 api 문제로 구현은 안 해놓음 (필요시 추후 업데이트 예정)
+        //insertLampData()  // 보안등 api가 제공처에서 수정중인 관계로 임시로 Block
 
         // 0. 현제 위치 마커로 찍고 카메라 위치 옮기기
-        var GPS_flag = 0    // 버튼의 on/off 구현을 위한 flag 설정
+        var GPS_flag = true    // 버튼의 on/off 구현을 위한 flag 설정
         GPS.setOnClickListener{
-            if(GPS_flag == 0) {
-                setLastLocation(initial_location)   // 현 위치로 카메라 설정 및 마커 찍기
-                GPS_flag = 1
-            }
-            else if(GPS_flag == 1){
+            if(GPS_flag) {
+                GPS_flag = setLastLocation(initial_location)   // 현 위치로 카메라 설정 및 마커 찍기
+            }else{
                 initial_marker.remove() // 현 위치 마커 지우기
-                GPS_flag = 0
+                GPS_flag = true
             }
         }
 
         // 1. 램프 켜기 버튼(클러스터가 확대 축소 시에 무조건 다시 뜨는 버그 있음)
-        var Light_flag = 0  // 버튼의 on/off 구현을 위한 flag 설정
+        var Light_flag = true  // 버튼의 on/off 구현을 위한 flag 설정
         LightBtn.setOnClickListener{
-            if(Light_flag == 0) {
-                addClusterOnMap()   // map에 가로등 클러스터 구현
-                Light_flag = 1
-            }
-            else if(Light_flag == 1){
+            if(Light_flag) {
+                Light_flag = addClusterOnMap()   // map에 가로등 클러스터 구현
+            } else {
                 mMap.clear()    // 지도에 있는 모든 표시들 지움(클러스터 일시적으로 지워지긴 하나 확대 및 축소 시 다시 살아남)
-                Light_flag = 0
+                Light_flag = true
             }
         }
 
         // 2. 안심벨 울리기 버튼
         val uriRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) // 안심벨용 기본 알림음(별도 파일x, 내장용)
         val ringtone = RingtoneManager.getRingtone(this, uriRingtone)
-        var Bell_flag = 0   // 버튼의 on/off 구현을 위한 flag 설정
         BellBtn.setOnClickListener{
-            if(Bell_flag == 0){
-                ringtone.play() // 소리 울림
-                Bell_flag = 1
-            }
-            else if(Bell_flag == 1){
-                ringtone.stop() // 소리 끔
-                Bell_flag = 0
+            if (!ringtone.isPlaying) {
+                ringtone.play()     // 소리 내기
+            } else {
+                ringtone.stop()     // 소리가 나고 있다면 멈추기
             }
         }
 
         // 3. 경찰서 전화걸기
         CallBtn.setOnClickListener {
-            var intent = Intent(Intent.ACTION_DIAL)
+            val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:112")  // intent를 이용해 경찰서로 전화거는 기능 구현
             if(intent.resolveActivity(packageManager) != null){
                 startActivity(intent)
@@ -121,21 +114,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 4. 경찰서 목록이 뜨고 그 중에서 하나 선택하면 현위치로부터 경로 찍어주기
         PoliceBtn.setOnClickListener {
-            var popupMenu = PopupMenu(applicationContext, PoliceBtn)    // 팝업 메뉴를 통한 구현
-            menuInflater?.inflate(R.menu.menu_police, popupMenu.menu)
-
-            var listener = PopupMenuListener()  // 리스너는 아래에 내부 클래스로 구현해둠
+            val popupMenu = PopupMenu(applicationContext, PoliceBtn)    // 팝업 메뉴를 통한 구현
+            menuInflater.inflate(R.menu.menu_police, popupMenu.menu)
+            val listener = PopupMenuListener(adb.PoliceDataExtract(pp))  // 리스너는 아래에 내부 클래스로 구현해둠
             popupMenu.setOnMenuItemClickListener(listener)
             popupMenu.show()
         }
-
     }
 
     // 팝업 메뉴를 위한 내부 클래스
-    inner class PopupMenuListener:PopupMenu.OnMenuItemClickListener{
-        val policeArray = adb.PoliceDataExtract(pp) // 경찰서 위치 데이터 뽑아내기
+    inner class PopupMenuListener(data : ArrayList<policeSortData>):PopupMenu.OnMenuItemClickListener{
+        val policeArray = data // 경찰서 위치 데이터 뽑아내기
         override fun onMenuItemClick(p0: MenuItem?): Boolean {
-            when(p0?.itemId){   // 각각 경찰서 위치에 맞는 경로를 설정
+            when (p0?.itemId   // 각각 경찰서 위치에 맞는 경로를 설정
+                // 각각 경찰서 위치에 맞는 경로를 설정
+            ) {
                 R.id.world -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
@@ -281,7 +274,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     // 현위치에 마커 추가하고 카메라의 위치를 옮기는 메소드
-    fun setLastLocation(lastLocation: Location){
+    fun setLastLocation(lastLocation: Location):Boolean{
         val LATLNG = LatLng(lastLocation.latitude, lastLocation.longitude)
         val markerOptions = MarkerOptions()
             .position(LATLNG)
@@ -294,6 +287,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         initial_marker = mMap.addMarker(markerOptions)  // 마커 추가하고
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))  // 카메라 위치 옮김
+        return false
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +335,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     // 안전등 위치 지도에 클러스터로 표시해주는 메소드
-    private fun addClusterOnMap(){
+    private fun addClusterOnMap():Boolean{
         val lampArray = adb.LampDataExtract(pp)
         // for loop을 돌려서 지도에 클러스터링 마커를 찍어줌
         for (idx: Int in 0 until lampArray.size) {
@@ -350,5 +344,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 lampArray[idx].latitude.toString(),
                 lampArray[idx].longitude.toString()))
         }
+        return false
     }
 }
