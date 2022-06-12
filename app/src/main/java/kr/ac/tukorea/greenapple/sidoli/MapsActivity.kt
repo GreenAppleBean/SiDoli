@@ -39,8 +39,8 @@ import kr.ac.tukorea.greenapple.sidoli.sql.policeSortData
 /**
  * 자잘한 버그들..
  * 1. 보안등 버튼이 한 번 클릭 되면 재클릭 시 지워져도 확대, 축소 시 다시 뜸 (setOnCameraListener 때문인 것 같은데 자세한 건 알아봐야 함) -> fixed!!
- * 2. 안심벨 울리기는 on/off 방식으로 구현해놓긴 했는데, 실제로 울리는 지는 실제 디바이스에서 테스트해봐야할 듯!!
- * 3. 경찰서 목록이 뜨긴 하는데, 두 번째로 클릭해야만 그에 맞는 적합한 경로가 뜸 (뭔가 클릭이 한 번씩 밀리는 것 같음)
+ * 2. 안심벨 울리기는 on/off 방식으로 구현해놓긴 했는데, 실제로 울리는 지는 실제 디바이스에서 테스트해봐야할 듯!! -> 실제 디바이스에서는 소리 잘 나옵니다. AVD문제인 듯
+ * 3. 경찰서 목록이 뜨긴 하는데, 두 번째로 클릭해야만 그에 맞는 적합한 경로가 뜸 (뭔가 클릭이 한 번씩 밀리는 것 같음 -> 마커는 잘 찍히는 걸 보니 리스너 문제보단 getDirection 메소드 문제인 듯..)
  */
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -101,7 +101,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // 2. 안심벨 울리기 버튼
-        val uriRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) // 안심벨용 기본 알림음(별도 파일x, 내장용)
+        //val uriRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) // 안심벨용 기본 알림음(별도 파일x, 내장용)
+        val uriRingtone = Uri.parse("android.resource://" + packageName + "/" + R.raw.police)   // 알람음 파일을 따로 집어넣어두었습니다.
         val ringtone = RingtoneManager.getRingtone(this, uriRingtone)
         BellBtn.setOnClickListener{
             if (!ringtone.isPlaying) {
@@ -142,51 +143,61 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[0].latitude},${policeArray[0].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 0)
                 }
                 R.id.world2 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[1].latitude},${policeArray[1].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 1)
                 }
                 R.id.world3 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[2].latitude},${policeArray[2].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 2)
                 }
                 R.id.world4 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[3].latitude},${policeArray[3].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 3)
                 }
                 R.id.world5 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[4].latitude},${policeArray[4].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 4)
                 }
                 R.id.world6 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[5].latitude},${policeArray[5].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 5)
                 }
                 R.id.world7 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[6].latitude},${policeArray[6].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 6)
                 }
                 R.id.world8 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[7].latitude},${policeArray[7].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 7)
                 }
                 R.id.world9 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[8].latitude},${policeArray[8].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 8)
                 }
                 R.id.world10 -> {
                     mMap.clear()
                     getcurrentDirection("${initial_location.latitude},${initial_location.longitude}",
                         "${policeArray[9].latitude},${policeArray[9].longitude}")
+                    addPoliceMarkerOnMap(policeArray, 9)
                 }
             }
             return false
@@ -334,13 +345,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     // 경찰서 위치 지도에 마커로 표시해주는 메소드(구현은 해놓았으니 실 사용은 안 하게 됨)
-    private fun addMarkerOnMap() {
-        val policeArray = adb.PoliceDataExtract(pp)
+    private fun addPoliceMarkerOnMap(data : ArrayList<policeSortData>, idx : Int) {
+        //val policeArray = adb.PoliceDataExtract(pp)
         // 경찰 data 마커 표시하기 (파랑색)
-        for (idx: Int in 0 until policeArray.size) {
-            val police = LatLng(policeArray[idx].latitude, policeArray[idx].longitude)
-            mMap.addMarker(MarkerOptions().position(police).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
-        }
+        val police = LatLng(data[idx].latitude, data[idx].longitude)
+        mMap.addMarker(MarkerOptions().position(police).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
     }
 
     // 안전등 위치 지도에 클러스터로 표시해주는 메소드
