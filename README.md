@@ -23,22 +23,30 @@
 * 기본 기능  
   - map view
   - 길 찾기
-  - 검색하기
 * 특화 기능
   - 긴급 신고
   - 안심 벨
-  - 근처 경찰서까지 안내
+  - 경찰서 안내
   - 가로등 위치 확인   
 
 ## 개발 환경
-* Android Studio @버전
-* sqlite @버전
-* 구글맵?
-
-## 어플 버전
+* Android Studio 
+* sqlite
+* 구글맵
 
 ## APIs
 * [전국 보안등정보 표준데이터](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15017320)  
 * [경기 지구대 현황](https://data.gg.go.kr/portal/data/service/selectServicePage.do?page=1&rows=10&sortColumn=&sortDirection=&infId=DQ2I0RA86JC3Z2M9Q8RZ17985111&infSeq=1&order=&loc=&searchWord=%EC%A7%80%EA%B5%AC%EB%8C%80)
   
 ## 스크린샷
+#### 1.기본화면
+<img src="https://user-images.githubusercontent.com/102780846/173476448-5c672a80-2fcd-4c8a-a855-633127bb7be1.png" width="300" height="400">
+
+#### 2.경찰서 안내
+<img src="https://user-images.githubusercontent.com/102780846/173482947-d52493a5-1a9d-41ce-8046-eae6f1003ddd.png" width="300" height="400">
+
+#### 3.안심벨
+<img src="https://user-images.githubusercontent.com/102780846/173483117-195d8327-1c39-4e62-bdef-7b3175a4c420.png" width="300" height="400">
+
+#### 4.가로등 위치 확인
+<img src="https://user-images.githubusercontent.com/102780846/173483274-7ce8741b-2601-45f8-abc0-3beb978ba39f.png" width="300" height="400">
